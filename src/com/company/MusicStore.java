@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.event.WindowListener;
+import java.sql.ResultSet;
+import java.util.Date;
 /**
  * Created by Yanirash on 4/23/2015.
  */
@@ -14,35 +16,42 @@ public class MusicStore extends JFrame implements WindowListener{
     private JButton loginButton;
     private JButton firstUseButton;
     private JTable table1;
-//    private JTextField textField3;
     private JTextField textField4;
     private JTextField textField5;
     private JTextField textField3;
     private JTextField textField6;
     private JTextField textField7;
     private JTextField textField8;
-    private JTextField textField9;
     private JTextField textField10;
     private JButton Search;
+    private JComboBox actionSelect;
+    private JButton goButton;
 
     public static String getValue;
+    public static Date date = new Date();
 
 
     MusicStore (final MusicDataModel musicDataTableModel) {
-        boolean firstTime = true;
-        while  (firstTime) {
-
-            setContentPane(rootpanel);
-            pack();
-            setTitle("Music Database Application");
-            addWindowListener(this);
-            setVisible(true);
-            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            firstTime = false;
-            break;
 
 
-        }
+
+        setContentPane(rootpanel);
+        pack();
+        setTitle("Music Database Application");
+        addWindowListener(this);
+        setVisible(true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+
+        final String MONEY_INFO = "Total Money Owed";
+        final String BARGAIN_LIST = "Records 30 days old ";
+
+        actionSelect.addItem(MONEY_INFO);
+        actionSelect.addItem(BARGAIN_LIST);
+
+
+
+
 
 
         //TODO try to display the database on the GUI JTable
@@ -53,7 +62,7 @@ public class MusicStore extends JFrame implements WindowListener{
         table1.setModel(musicDataTableModel);
         table1.getColumnModel().getColumn(0).setWidth(400);
 
-        //TODO get user input and store in database
+        //TODO
 
         textField1.addKeyListener(new KeyAdapter() {
             @Override
@@ -62,21 +71,13 @@ public class MusicStore extends JFrame implements WindowListener{
             }
         });
 
-
-
-
         textField2.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
                 super.keyTyped(e);
             }
         });
-        firstUseButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
 
-            }
-        });
         textField4.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -93,6 +94,7 @@ public class MusicStore extends JFrame implements WindowListener{
             @Override
             public void keyTyped(KeyEvent e) {
                 super.keyTyped(e);
+
             }
         });
         textField3.addKeyListener(new KeyAdapter() {
@@ -101,10 +103,12 @@ public class MusicStore extends JFrame implements WindowListener{
                 super.keyTyped(e);
             }
         });
+
         textField6.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
                 super.keyTyped(e);
+
             }
         });
 
@@ -113,16 +117,13 @@ public class MusicStore extends JFrame implements WindowListener{
             @Override
             public void keyTyped(KeyEvent e) {
                 super.keyTyped(e);
+
+
+
             }
         });
 
 
-        textField9.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                super.keyTyped(e);
-            }
-        });
 
 
         textField10.addKeyListener(new KeyAdapter() {
@@ -135,6 +136,8 @@ public class MusicStore extends JFrame implements WindowListener{
         //TODO create add button, delete button, and other features that will query the table
         loginButton.addActionListener(new ActionListener() {
             @Override
+
+
             public void actionPerformed(ActionEvent e) {
 
                 String id = textField4.getText();
@@ -145,7 +148,7 @@ public class MusicStore extends JFrame implements WindowListener{
                 String recordId = textField7.getText();
                 String title = textField6.getText();
                 String price = textField8.getText();
-                String date = textField9.getText();
+//              date = textField9.getText();
 
 
                 int id1 = Integer.parseInt(id);
@@ -153,9 +156,35 @@ public class MusicStore extends JFrame implements WindowListener{
                 double moneyOwed1 = Double.parseDouble(moneyOwed);
                 double price1 = Double.parseDouble(price);
 
+                java.sql.Date currentDate = new java.sql.Date(date.getTime());
 
-//                System.out.println("Adding " + consignor + " " + conNum + " " + artist);
-                boolean insertedRow = musicDataTableModel.insertRow(id1,consignor, conNum,moneyOwed1,recordId1,artist,title,price1,date);
+
+                while (id.) )
+
+
+
+
+
+                while  (ViewController.CopyList().contains(recordId1)) {
+
+
+
+                       String newValue = JOptionPane.showInputDialog(rootpanel, "Copy of the record is already in the database. Please enter a new one");
+
+                        recordId1 = Integer.parseInt(newValue);
+
+
+
+
+
+                }
+
+
+
+                ViewController.resetResultSet();
+
+//              System.out.println("Adding " + consignor + " " + conNum + " " + artist);
+                boolean insertedRow = musicDataTableModel.insertRow(id1, consignor, conNum, moneyOwed1, recordId1, artist, title, price1,currentDate);
                 if (insertedRow) {
 
                     MusicDatabase.loadAllRecords();
@@ -164,22 +193,23 @@ public class MusicStore extends JFrame implements WindowListener{
                 }
 
 
+
             }
 
-            });
+
+        });
 
 
         Search.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 getValue = textField10.getText();
-
                 MusicDatabase.searchRecords();
+                ViewController.hideMusicStore();
+//                ViewController.destroyRecordView();
+//                ViewController.getSum();
 
-
-
-
-
+//                ViewController.getSum();
 //                table1.setModel(musicDataTableModel);
 
             }
@@ -187,8 +217,27 @@ public class MusicStore extends JFrame implements WindowListener{
         firstUseButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MusicDatabase.shutdown();
-                System.exit(0);
+                ViewController.shutDownGUI();
+
+            }
+        });
+
+
+        goButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String actionChoice = (String)actionSelect.getSelectedItem();
+
+                if (actionChoice == MONEY_INFO) {
+                    MusicDatabase.moneyMade();
+                    ViewController.hideMusicStore();
+                }
+
+                if (actionChoice == BARGAIN_LIST) {
+                    MusicDatabase.countingDays();
+                    ViewController.hideMusicStore();
+                }
             }
         });
     }

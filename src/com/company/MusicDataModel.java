@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
+
 /**
  * Created by Yanirash on 4/28/2015.
  */
@@ -21,6 +22,11 @@ public class MusicDataModel extends AbstractTableModel {
         setup();
 
     }
+
+    MusicDataModel() {
+        setup();
+    }
+
     // Setup the information that will appear on the GUI
 
     private void setup () {
@@ -92,7 +98,7 @@ public class MusicDataModel extends AbstractTableModel {
 
 
 
-    public boolean insertRow(int id, String consignor, String num, double money,int recordID, String artist, String title, double price, String date) {
+    public boolean insertRow(int id, String consignor, String num, double money,int recordID, String artist, String title, double price, java.sql.Date date) {
 
         try {
             //Move to insert row, insert the appropriate data in each column, insert the row, move cursor back to where it was before we started
@@ -105,7 +111,7 @@ public class MusicDataModel extends AbstractTableModel {
             resultSet.updateString(MusicDatabase.ARTIST, artist);
             resultSet.updateString(MusicDatabase.TITLE, title);
             resultSet.updateDouble(MusicDatabase.PRICE, price);
-            resultSet.updateString(MusicDatabase.DATE, date);
+            resultSet.updateDate(MusicDatabase.DATE,date);
             resultSet.insertRow();
             resultSet.moveToCurrentRow();
             fireTableDataChanged();

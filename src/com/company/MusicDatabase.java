@@ -1,8 +1,8 @@
 package com.company;
 
 import javax.swing.*;
+import java.awt.*;
 import java.sql.*;
-import java.sql.Date;
 import java.util.*;
 
 public class MusicDatabase {
@@ -23,19 +23,28 @@ public class MusicDatabase {
     public final static String TITLE = "title";
     public final static String PRICE = "price";
     public final static String DATE = "date";
+    public static  java.util.Date Date = new java.util.Date();
+    public static ArrayList <Integer> idRecordList = new ArrayList<Integer>();;
+
+
+    public static double money;
+
 
 
     public final static String ID = "id";
     public final static String RECORD_ID = "rID";
 
-
+    private static MusicStore music;
     private static MusicDataModel musicDataModel;
-    private static MusicDataModel searchMusicDataModel;
+    private static RecordView recordView;
+    private static MoneyOwedView moneyInfo;
+    private static BargainList bargain;
+//    private static MusicDataModel searchMusicDataModel;
 
     static Connection con = null;
     static Statement statement = null;
     static ResultSet rs = null;
-    static ResultSet ls =null;
+    static ResultSet ls;
     static PreparedStatement psInsert = null;
 
 
@@ -52,7 +61,7 @@ public class MusicDatabase {
 
         // Start GUI
 
-        MusicStore tableGUI = new MusicStore(musicDataModel);
+        music = new MusicStore(musicDataModel);
 
     }
 
@@ -67,7 +76,6 @@ public class MusicDatabase {
         try {
 
             con = DriverManager.getConnection(protocol + DbName + ";create=true", USER, PASS);
-            statement = con.createStatement();
 
 
             statement = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -77,7 +85,7 @@ public class MusicDatabase {
 
 //            String createRecordTable = "CREATE TABLE " + MUSIC_TABLE_NAME + " ( " + CON_NAME + " varchar(30), " + CON_PHONE + " varchar(30), " + ARTIST_NAME + " varchar(30)) ";
 //            String createRecordTableSQL = "CREATE TABLE records ( " + RECORD_ID + " int, " + ARTIST + " varchar(30), " + TITLE + " varchar(30)," + PRICE + " double, " + ID + " int, " + DATE + " date)";
-            String createConsTableSQL = "CREATE TABLE " + CON_TABLE + " ( id int, " + CON_NAME + " varchar(30), " + CON_PHONE + " varchar(30), money_owed double," + RECORD_ID + " int, " +  ARTIST + " varchar(30), " + TITLE + " varchar(30)," + PRICE + " double, " + DATE + " date)";
+            String createConsTableSQL = "CREATE TABLE " + CON_TABLE + " ( id int, " + CON_NAME + " varchar(30), " + CON_PHONE + " varchar(30), money_owed double," + RECORD_ID + " int, " +  ARTIST + " varchar(30), " + TITLE + " varchar(30)," + PRICE + " double, " + DATE + " Date)";
 //            String createConsTableSQL = "CREATE TABLE consigners (id int, name varchar(30), phone varchar(30), money_owed double)";
             String dropTable = "DROP TABLE " + CON_TABLE;
             String dropRecord = "DROP TABLE records";
@@ -228,12 +236,14 @@ public class MusicDatabase {
                 String artist = ls.getString(ARTIST);
                 String title = ls.getString(TITLE);
                 double price = ls.getDouble(PRICE);
-                Date date = ls.getDate(DATE);
+                Date  = ls.getDate(DATE);
 
-                System.out.println( id + "; " + name  + "; " + phone  + "; " + money  + "; " + record + "; " + artist  + "; " + title  + "; " + price  + "; " + date);
+                System.out.println( id + "; " + name  + "; " + phone  + "; " + money  + "; " + record + "; " + artist  + "; " + title  + "; " + price  + "; " + Date);
 
 
             }
+
+
 
 
             //TODO display the search result on the same window
@@ -242,19 +252,19 @@ public class MusicDatabase {
 
 
 
+                MusicDataModel musicDataModel1 = new MusicDataModel(ls);
 
-                musicDataModel = new MusicDataModel(ls);
 
-                MusicStore display = new MusicStore(musicDataModel);
+
+
+                recordView = new RecordView (musicDataModel1);
+
+
 
 
             }
 
-            else {
-                musicDataModel = new MusicDataModel(ls);
 
-                MusicStore display = new MusicStore(musicDataModel);
-            }
 
 //                musicDataModel.updateResultSet(ls);
 //
@@ -276,6 +286,143 @@ public class MusicDatabase {
 //            String deleteConsignor = "DROP TABLE Consignor";
 //            statement.executeUpdate(deleteConsignor);
 //            System.out.println("The table was deleted");
+
+
+    //TODO compute what you owe the cosigner
+    public static void moneyMade () {
+
+        try {
+
+            if (ls != null) {
+                ls.close();
+            }
+            String totalMoneyOwed = "SELECT SUM(money_owed) AS TotalMoneyOwed FROM conRecords";
+
+            ls = statement.executeQuery(totalMoneyOwed);
+            while (ls.next()) {
+                money = ls.getDouble("TotalMoneyOwed");
+                System.out.println("My money" + money);
+            }
+
+
+            moneyInfo = new MoneyOwedView();
+
+
+
+        } catch (SQLException se) {
+            System.out.println("Hello" + se.getStackTrace());
+
+
+        }
+    }
+
+    public static double getMoneyOwed () {
+
+        return money;
+    }
+
+
+
+
+
+    //TODO Display error Message for multiple copies of a record
+    public static void multipleCopies() {
+
+        try {
+
+            if ( ls != null) {
+                ls.close();
+            }
+            String idRecord = "SELECT rID FROM conRecords" ;
+
+            ResultSet ns = statement.executeQuery(idRecord);
+
+
+            while (ns.next()) {
+                int recordID = ns.getInt("rID");
+                idRecordList.add(recordID);
+                System.out.println("Adding VAlues" + recordID);
+            }
+
+
+
+//            loadAllRecords();
+
+
+
+
+        } catch (SQLException se) {
+            System.out.println("Hi" + se.getStackTrace());
+
+        }
+
+
+
+
+    }
+
+
+
+    public static void closeResult() {
+        try {
+            rs.close();
+
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+
+        }
+    }
+
+
+
+
+    //TODO send data to bargain basement after 30 days
+
+    public static void countingDays () {
+
+
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+            String dateDifference = "SELECT * FROM conRecords WHERE CURRENT_DATE = 30";
+            rs = statement.executeQuery(dateDifference);
+
+            while (rs.next()) {
+                Date = rs.getDate("date");
+
+                System.out.println(" less than 30 days" + Date);
+
+            }
+
+            if (musicDataModel != null) {
+
+                MusicDataModel musicDataModelBag = new MusicDataModel(rs);
+
+                bargain = new BargainList(musicDataModelBag);
+
+
+
+
+            }
+
+        }
+
+        catch (SQLException se) {
+            System.out.println("countingDays" + se);
+        }
+
+    }
+
+
+
+    //TODO Send the record to the thrift store
+
+    public static void thriftStore () {}
+
+
+
 
     public static void shutdown() {
 
@@ -343,6 +490,20 @@ public class MusicDatabase {
         System.out.println("End of program ");
 
 
+    }
+
+    public static MusicStore getMusic() {
+        return music;
+    }
+
+    public static RecordView getRecordView() {
+        return recordView;
+    }
+
+
+
+    public static MoneyOwedView getMoneyView() {
+        return moneyInfo;
     }
 }
 
