@@ -1,9 +1,21 @@
 package com.company;
 
+/**
+ * Created by Yanirash on 4/23/2015.
+ * Program that create a Database
+ * Let user add their own data
+ * Compute the money owed by the consignor
+ * Source code : StackOverflow and class assignment Movie.java
+ *
+ */
+
 import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Date;
 
 public class MusicDatabase {
 //    private static String driver ="org.apache.derby.jdbc.EmbeddedDriver";
@@ -22,7 +34,7 @@ public class MusicDatabase {
     public final static String ARTIST = "artist";
     public final static String TITLE = "title";
     public final static String PRICE = "price";
-    public final static String DATE = "date";
+    public final static String DATE = "myDate";
     public static  java.util.Date Date = new java.util.Date();
     public static ArrayList <Integer> idRecordList = new ArrayList<Integer>();;
 
@@ -236,7 +248,7 @@ public class MusicDatabase {
                 String artist = ls.getString(ARTIST);
                 String title = ls.getString(TITLE);
                 double price = ls.getDouble(PRICE);
-                Date  = ls.getDate(DATE);
+                Date = ls.getDate(DATE);
 
                 System.out.println( id + "; " + name  + "; " + phone  + "; " + money  + "; " + record + "; " + artist  + "; " + title  + "; " + price  + "; " + Date);
 
@@ -382,23 +394,28 @@ public class MusicDatabase {
     public static void countingDays () {
 
 
+        java.sql.Date currentDate = new java.sql.Date(Date.getTime());
+//        try {
+//            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+//            Date date = format.parse(myDate)
+//        }
+
         try {
-            if (rs != null) {
-                rs.close();
+            if (ls != null) {
+                ls.close();
             }
-            String dateDifference = "SELECT * FROM conRecords WHERE CURRENT_DATE = 30";
-            rs = statement.executeQuery(dateDifference);
+            String dateDifference = "SELECT * FROM conRecords WHERE myDate < '" + currentDate +"'  ";
+            ls = statement.executeQuery(dateDifference);
 
-            while (rs.next()) {
-                Date = rs.getDate("date");
-
+            while (ls.next()) {
+                Date = ls.getDate("myDate");
                 System.out.println(" less than 30 days" + Date);
 
             }
 
             if (musicDataModel != null) {
 
-                MusicDataModel musicDataModelBag = new MusicDataModel(rs);
+                MusicDataModel musicDataModelBag = new MusicDataModel(ls);
 
                 bargain = new BargainList(musicDataModelBag);
 
@@ -414,6 +431,8 @@ public class MusicDatabase {
         }
 
     }
+
+
 
 
 
@@ -504,6 +523,12 @@ public class MusicDatabase {
 
     public static MoneyOwedView getMoneyView() {
         return moneyInfo;
+    }
+
+
+
+    public static BargainList getBargain() {
+        return bargain;
     }
 }
 

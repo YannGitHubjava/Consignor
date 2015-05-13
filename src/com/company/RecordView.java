@@ -11,7 +11,7 @@ public class RecordView extends JFrame implements WindowListener {
     private JPanel rootpanel;
     private JTable table1;
     private JButton btnGoBack;
-    private JButton button2;
+    private JButton saleRecordButton;
 
 
     RecordView (final MusicDataModel musicDataTableModel) {

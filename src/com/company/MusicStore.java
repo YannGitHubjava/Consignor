@@ -8,6 +8,9 @@ import java.sql.ResultSet;
 import java.util.Date;
 /**
  * Created by Yanirash on 4/23/2015.
+ * Program that create a Database
+ * Let user add their own data
+ * Compute the money owed by the consignor
  */
 public class MusicStore extends JFrame implements WindowListener{
     private JPanel rootpanel;
@@ -26,8 +29,22 @@ public class MusicStore extends JFrame implements WindowListener{
     private JButton Search;
     private JComboBox actionSelect;
     private JButton goButton;
+    private JLabel myID;
+    private JLabel myNumb;
+    private JLabel myName;
+    private JLabel myMoney;
+    private JLabel myRecord;
+    private JLabel myArtist;
+    private JLabel myTitle;
+    private JLabel myPrice;
 
     public static String getValue;
+    public static int id1;
+    public static int recordId1;
+    public static double moneyOwed1;
+    public static double price1;
+    public static String consignor1;
+
     public static Date date = new Date();
 
 
@@ -151,15 +168,112 @@ public class MusicStore extends JFrame implements WindowListener{
 //              date = textField9.getText();
 
 
-                int id1 = Integer.parseInt(id);
-                int recordId1 = Integer.parseInt(recordId);
-                double moneyOwed1 = Double.parseDouble(moneyOwed);
-                double price1 = Double.parseDouble(price);
+
 
                 java.sql.Date currentDate = new java.sql.Date(date.getTime());
 
 
-                while (id.) )
+
+                //Error Handling and Validation
+
+                //Validation of id
+
+                try {
+                    id1 = Integer.parseInt(id);
+                }
+
+                catch (NumberFormatException ne){
+                    String corrID = JOptionPane.showInputDialog(rootpanel, "Please enter a correct value for " + myID.getText());
+                    while (true) {
+                        try {
+                            id1 = Integer.parseInt(corrID);
+                            break;
+                        } catch (NumberFormatException se) {
+                            corrID = JOptionPane.showInputDialog(rootpanel, "Please enter a correct value for " + myID.getText());
+
+                        }
+                    }
+                }
+
+
+
+                //Validation of record ID
+
+                try {
+                    recordId1 = Integer.parseInt(recordId);
+                }
+
+                catch (NumberFormatException ne) {
+                    String check1 = JOptionPane.showInputDialog(rootpanel, "Please enter a correct value for " + myRecord.getText());
+                    while (true) {
+                        try {
+                            recordId1 = Integer.parseInt(check1);
+                            break;
+                        } catch (NumberFormatException se) {
+                            check1 = JOptionPane.showInputDialog(rootpanel, "Please enter a correct value for " + myRecord.getText());
+
+                        }
+                    }
+                }
+
+
+
+                //Validation of money owed
+
+
+                try {
+                    moneyOwed1 = Double.parseDouble(moneyOwed);
+                }
+
+                catch (NumberFormatException le) {
+                    String check2 = JOptionPane.showInputDialog(rootpanel, "Please enter a correct value for " + myMoney.getText());
+                    while (true) {
+                        try {
+                            moneyOwed1 = Double.parseDouble(check2);
+                            break;
+                        } catch (NumberFormatException se) {
+                            check2 = JOptionPane.showInputDialog(rootpanel, "Please enter a correct value for " + myMoney.getText());
+
+                        }
+                    }
+                }
+
+
+                //Validation of Price
+
+                try {
+                    price1 = Double.parseDouble(price);
+                }
+
+                catch (NumberFormatException xe) {
+                    String corrID = JOptionPane.showInputDialog(rootpanel, "Please enter a correct value for " + myPrice.getText() );
+                    while (true) {
+                        try {
+                            price1 = Double.parseDouble(corrID);
+                            break;
+                        } catch (NumberFormatException se) {
+                            corrID = JOptionPane.showInputDialog(rootpanel, "Please enter a correct value for " + myPrice.getText());
+
+                        }
+                    }
+                }
+
+
+
+
+                //Validation of Consignor
+                while (consignor.equals("") ) {
+                    String test = JOptionPane.showInputDialog(null, myName.getText() +" field is empty!");
+                    consignor = test;
+                    }
+
+
+
+
+
+                //Validation of Consignor Number
+
+
 
 
 
@@ -195,6 +309,7 @@ public class MusicStore extends JFrame implements WindowListener{
 
 
             }
+
 
 
         });

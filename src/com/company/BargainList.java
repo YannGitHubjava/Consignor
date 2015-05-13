@@ -2,10 +2,8 @@ package com.company;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.*;
+
 
 /**
  * Created by Yanirash on 5/12/2015.
@@ -50,7 +48,7 @@ public class BargainList extends JFrame implements WindowListener  {
         @Override
         public void actionPerformed(ActionEvent e) {
             ViewController.showMusicStore();
-            ViewController.destroyRecordView();
+            ViewController.destroyBargain();
         }
     });
 }
