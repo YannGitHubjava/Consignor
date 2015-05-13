@@ -11,6 +11,7 @@ import java.util.Date;
  * Program that create a Database
  * Let user add their own data
  * Compute the money owed by the consignor
+ * Still need more work : Bargain List and Thrift Store
  */
 public class MusicStore extends JFrame implements WindowListener{
     private JPanel rootpanel;
