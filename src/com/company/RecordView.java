@@ -52,26 +52,6 @@ public class RecordView extends JFrame implements WindowListener {
 
 
 
-        saleRecordButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int row = table1.getSelectedRow();
-                if(row < 0) {
-                    JOptionPane.showMessageDialog(rootpanel, "You must select a record to sell!");
-                    return;
-                }
-
-                //checks to make sure a record is selected.
-                recordID = MusicDataModel.getID("RECORD_ID", row, table1, resultSet);
-                MusicDatabase.deleteRecordFromTable(recordID);
-                table1.updateUI();
-
-
-
-
-
-            }
-        });
     }
 
     @Override
