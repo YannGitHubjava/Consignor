@@ -63,9 +63,11 @@ public class MusicStore extends JFrame implements WindowListener{
 
         final String MONEY_INFO = "Total Money Owed";
         final String BARGAIN_LIST = "Records 30 days old ";
+        final String THRIFT_LIST = "Records of Year old ";
 
         actionSelect.addItem(MONEY_INFO);
         actionSelect.addItem(BARGAIN_LIST);
+        actionSelect.addItem(THRIFT_LIST);
 
 
 
@@ -353,6 +355,14 @@ public class MusicStore extends JFrame implements WindowListener{
                 if (actionChoice == BARGAIN_LIST) {
                     MusicDatabase.countingDays();
                     ViewController.hideMusicStore();
+                }
+
+                if (actionChoice == THRIFT_LIST) {
+                    BargainList.myTextUpdate = "Here is a list of items that are more than a year old";
+                    BargainList.myButtonUpdate = "Send To ThriftStore";
+                    MusicDatabase.thriftStore();
+                    ViewController.hideMusicStore();
+
                 }
             }
         });

@@ -12,7 +12,10 @@ public class BargainList extends JFrame implements WindowListener  {
     private JTable table1;
     private JPanel rootpanel;
     private JButton goBackButton;
-
+    private JLabel myText;
+    private JButton Send;
+    public static String myTextUpdate = null;
+    public static String myButtonUpdate = null;
 
 
     BargainList (MusicDataModel musicDataTableModel) {
@@ -33,9 +36,18 @@ public class BargainList extends JFrame implements WindowListener  {
     table1.setModel(musicDataTableModel);
     table1.getColumnModel().getColumn(0).setWidth(400);
 
-    //Setting the JTextArea
+    //Setting the JLabel
+        if (myTextUpdate != null) {
 
+            myText.setText(myTextUpdate);
 
+            myTextUpdate = null;
+
+        }
+
+        if (myButtonUpdate != null) {
+            Send.setText(myButtonUpdate);
+        }
 
 
 

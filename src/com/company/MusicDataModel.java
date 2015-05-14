@@ -16,16 +16,17 @@ public class MusicDataModel extends AbstractTableModel {
     private int rowCount = 0;
     private int colCount = 0;
     ResultSet resultSet;
+    protected final static int NOT_AN_INT = Integer.MIN_VALUE;
 
+
+    //This is used in the GUI
     MusicDataModel(ResultSet rs) {
         this.resultSet = rs;
         setup();
 
     }
 
-    MusicDataModel() {
-        setup();
-    }
+
 
     // Setup the information that will appear on the GUI
 
@@ -38,6 +39,7 @@ public class MusicDataModel extends AbstractTableModel {
         } catch (SQLException se) {
             System.out.println("Error counting columns" + se);
         }
+        this.rowCount = getRowCount();
     }
 
 
@@ -129,6 +131,25 @@ public class MusicDataModel extends AbstractTableModel {
         }
 
     }
+
+
+    public static int getID(String columnName, int row, JTable table, ResultSet rs){
+        int id = NOT_AN_INT;
+        int column;
+        Object valueAt;
+        String valueString;
+        try {
+            column = (rs.findColumn(columnName)-1);
+            valueAt = table.getValueAt(row, column);
+            valueString = valueAt.toString();
+            id = Integer.parseInt(valueString);
+        }
+        catch (SQLException sqle){
+
+        }
+        return id;
+    }
+
     // Set columns titles
 
     @Override
@@ -136,11 +157,20 @@ public class MusicDataModel extends AbstractTableModel {
         //Get from ResultSet metadata, which contains the database column names
         //TODO translate DB column names into something nicer for display, so "YEAR_RELEASED" becomes "Year Released"
         try {
-            return resultSet.getMetaData().getColumnName(col + 1);
-        } catch (SQLException se) {
-            System.out.println("Error fetching column names" + se);
-            return "?";
-        }
+            String columnResult = resultSet.getMetaData().getColumnName(col + 1);
+            String[] columnNameArray = columnResult.split("_");
+            String columnName = "";
+            for (String word : columnNameArray) {
+                columnName = columnName + " " + word;
+            }
+
+            columnName.trim();
+            return columnName;
+        } catch(SQLException sqle){
+                System.out.println("Could not fetch column " + col + 1);
+                return "?";
+            }
+
     }
 
 }

@@ -42,6 +42,11 @@ public class MusicDatabase {
     public static double money;
 
 
+    private static final int YEAR = 0;
+    private static final int MONTH = 1;
+    private static final int DATE1 = 2;
+
+
 
     public final static String ID = "id";
     public final static String RECORD_ID = "rID";
@@ -138,7 +143,7 @@ public class MusicDatabase {
                 statement.executeUpdate(addRecord3);
                 String addRecord4 = "INSERT INTO conRecords VALUES (4, 'Diana', '65113413234', 67.50, 4 , 'White Album', 'Beatles', 5.00, '2014-05-03' )" ;
                 statement.executeUpdate(addRecord4);
-                String addRecord5 = "INSERT INTO conRecords VALUES (4, 'Diana', '65113413234', 67.50, 5 , 'Blue Album', 'Beatles', 3.50, '2014-05-03' )" ;
+                String addRecord5 = "INSERT INTO conRecords VALUES (4, 'Diana', '65113413234', 67.50, 5 , 'Blue Album', 'Beatles', 3.50, '2015-04-30' )" ;
                 statement.executeUpdate(addRecord5);
 //                System.out.println("Added test record data to database");
 //                String addConsigner1 = "INSERT INTO conRecords VALUES (3, 'Bob', '6121231234', 4.50)";
@@ -394,7 +399,6 @@ public class MusicDatabase {
     public static void countingDays () {
 
 
-        java.sql.Date currentDate = new java.sql.Date(Date.getTime());
 //        try {
 //            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 //            Date date = format.parse(myDate)
@@ -404,7 +408,8 @@ public class MusicDatabase {
             if (ls != null) {
                 ls.close();
             }
-            String dateDifference = "SELECT * FROM conRecords WHERE myDate < '" + currentDate +"'  ";
+            java.sql.Date monthOldDate = getMonthOldDate();
+            String dateDifference = "SELECT * FROM conRecords WHERE myDate <= '" + monthOldDate +"'  ";
             ls = statement.executeQuery(dateDifference);
 
             while (ls.next()) {
@@ -433,12 +438,102 @@ public class MusicDatabase {
     }
 
 
+    // Method to compute if the record had been in the store for precisely a month
+
+    public static java.sql.Date getMonthOldDate(){
+        java.util.Date date = new java.util.Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd");
+
+        String dateString = sdf.format(date).toString();
+        String splitDate[] = dateString.split("-");
+
+        Integer intYear = Integer.parseInt(splitDate[YEAR]);
+        Integer intMonth = Integer.parseInt(splitDate[MONTH]);
+        Integer intDate = Integer.parseInt(splitDate[DATE1]);
+
+        java.sql.Date todaysDate = new java.sql.Date(intYear-1900, intMonth-2, intDate);
+
+        return todaysDate;
+    }
+
+
+
+
+    // TODO How to delete a row from the GUI JTable
+    public static void deleteRecordFromTable(int ID ) {
+
+        try {
+            if (ls != null) {
+                ls.close();
+            }
+
+
+            String deleteRecordSales = "DELETE FROM conRecords  WHERE record_id = " + ID + ";";
+            ls = statement.executeQuery(deleteRecordSales);
+
+
+        } catch (SQLException sqle) {
+            System.out.println("Could not delete from mainRoomRecords database.");
+            System.out.println(sqle.getErrorCode() + " " + sqle.getMessage());
+            sqle.printStackTrace();
+
+        }
+    }
+
+
 
 
 
     //TODO Send the record to the thrift store
 
-    public static void thriftStore () {}
+    public static void thriftStore () {
+        try {
+            if (ls != null) {
+                ls.close();
+            }
+            java.sql.Date yearOldDate = getYearOldDate() ;
+            String dateDifference = "SELECT * FROM conRecords WHERE myDate <= '" + yearOldDate +"'  ";
+            ls = statement.executeQuery(dateDifference);
+
+            while (ls.next()) {
+                Date = ls.getDate("myDate");
+                System.out.println(" less than 30 days" + Date);
+
+            }
+
+            if (musicDataModel != null) {
+
+                MusicDataModel musicDataModelBag = new MusicDataModel(ls);
+
+                bargain = new BargainList(musicDataModelBag);
+
+
+
+
+            }
+
+        }
+
+        catch (SQLException se) {
+            System.out.println("countingDays" + se);
+        }
+
+    }
+
+    public static java.sql.Date getYearOldDate(){
+        java.util.Date date = new java.util.Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd");
+
+        String dateString = sdf.format(date).toString();
+        String splitDate[] = dateString.split("-");
+
+        Integer intYear = Integer.parseInt(splitDate[YEAR]);
+        Integer intMonth = Integer.parseInt(splitDate[MONTH]);
+        Integer intDate = Integer.parseInt(splitDate[DATE1]);
+
+        java.sql.Date todaysDate = new java.sql.Date(intYear-1901, intMonth-1, intDate);
+        return todaysDate;
+    }
 
 
 
